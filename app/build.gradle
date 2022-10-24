@@ -23,6 +23,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    
+    packagingOptions {
+        resources.excludes.add("META-INF/*")
+    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -46,5 +50,6 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "com.google.android.material:material:1.4.0"
     implementation "androidx.navigation:navigation-fragment-ktx:2.2.2"
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.9.1'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.3'
+    implementation 'com.google.ads.interactivemedia.v3:interactivemedia:3.25.1'
 }
