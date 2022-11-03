@@ -5,8 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.bitmovin.player.api.media.subtitle.SubtitleTrack
 import com.example.bitmovin.databinding.FragmentPlayerBinding
 import com.example.player.AttrsPlayerComponent
+import com.example.player.AttrsPlayerComponentSubtitle
 
 class PlayerFragment: Fragment() {
     var binding: FragmentPlayerBinding? = null
@@ -35,6 +37,16 @@ class PlayerFragment: Fragment() {
             )
         )
     }
+
+    private fun List<AttrsPlayerComponentSubtitle>.toSubtitleTracks() = map {
+        it.toSubtitleTracks()
+    }
+
+    private fun AttrsPlayerComponentSubtitle.toSubtitleTracks() = SubtitleTrack(
+        url = url,
+        label = label,
+        language = language
+    )
 
     override fun onDestroyView() {
         super.onDestroyView()
