@@ -24,9 +24,9 @@ data class AttrsPlayerComponent(
 )
 
 data class AttrsPlayerComponentSubtitle(
-    val url: String,
-    val label: String,
-    val language: String
+    val url: String = "https://platform-static.cdn.mdstrm.com/subs/60affd0addf19308279e2d16_62d77b709bb4e60836d97de0_1658773186323.vtt",
+    val label: String = "Español",
+    val language: String = "es-CL"
 )
 
 class PlayerComponent @JvmOverloads constructor(

@@ -10,7 +10,7 @@ import com.example.bitmovin.databinding.FragmentPlayerBinding
 import com.example.player.AttrsPlayerComponent
 import com.example.player.AttrsPlayerComponentSubtitle
 
-class PlayerFragment: Fragment() {
+class PlayerFragment : Fragment() {
     var binding: FragmentPlayerBinding? = null
 
     override fun onCreateView(
@@ -28,25 +28,18 @@ class PlayerFragment: Fragment() {
         setupPlayer()
     }
 
-    private fun setupPlayer() = binding?.apply{
+    private fun setupPlayer() = binding?.apply {
         player.setAttributes(
             AttrsPlayerComponent(
                 videoHlsUrl = "https://mdstrm.com/video/62d77b709bb4e60836d97de0.m3u8",
                 thumbnailsUrl = "https://thumbs.cdn.mdstrm.com/thumbs/60affd0addf19308279e2d16/62d77b709bb4e60836d97de0/preview_62d77b709bb4e60836d97de0.vtt",
-                ads = "https://mdstrm.com/ads/6266d5e7e20e33083b4e33ea/map.xml?duration=1232"
+                ads = "https://mdstrm.com/ads/6266d5e7e20e33083b4e33ea/map.xml?duration=1232",
+                subtitles = listOf(AttrsPlayerComponentSubtitle())
             )
+
         )
     }
 
-    private fun List<AttrsPlayerComponentSubtitle>.toSubtitleTracks() = map {
-        it.toSubtitleTracks()
-    }
-
-    private fun AttrsPlayerComponentSubtitle.toSubtitleTracks() = SubtitleTrack(
-        url = url,
-        label = label,
-        language = language
-    )
 
     override fun onDestroyView() {
         super.onDestroyView()
