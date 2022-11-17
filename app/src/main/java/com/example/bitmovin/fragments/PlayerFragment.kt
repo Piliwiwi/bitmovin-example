@@ -45,10 +45,4 @@ class PlayerFragment : Fragment() {
         super.onDestroyView()
         binding = null
     }
-
-    companion object {
-        const val TAG = "VCP"
-
-        fun makeInstance() = PlayerFragment()
-    }
 }
