@@ -22,6 +22,7 @@ class PlayerActivity : AppCompatActivity() {
     private fun initializeCastManager() {
         /* getInstance cast manager initialize internally,
         * don't need to use BitmovinCastManager.initialize() */
+        BitmovinCastManager.initialize()
         castManager = BitmovinCastManager.getInstance()
         castManager?.updateContext(this)
     }
