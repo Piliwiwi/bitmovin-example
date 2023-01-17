@@ -1,8 +1,9 @@
-package com.example.player
+package com.example.bitmovin.player
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.bitmovin.player.api.advertising.AdItem
 import com.bitmovin.player.api.advertising.AdSource
@@ -13,7 +14,8 @@ import com.bitmovin.player.api.media.thumbnail.ThumbnailTrack
 import com.bitmovin.player.api.source.Source
 import com.bitmovin.player.api.source.SourceConfig
 import com.bitmovin.player.api.ui.StyleConfig
-import com.example.player.databinding.MplayMediaPlayerComponentPlayerBinding
+import com.bitmovin.player.casting.BitmovinCastManager
+import com.example.bitmovin.databinding.MplayMediaPlayerComponentPlayerBinding
 
 data class AttrsPlayerComponent(
     val videoDashUrl: String? = null,
@@ -39,7 +41,8 @@ class PlayerComponent @JvmOverloads constructor(
         if (binding == null) {
             val inflater =
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            binding = MplayMediaPlayerComponentPlayerBinding.inflate(inflater, this)
+            binding = MplayMediaPlayerComponentPlayerBinding.inflate(inflater, this, true)
+            BitmovinCastManager.getInstance().updateContext(context)
         }
     }
 
@@ -49,8 +52,9 @@ class PlayerComponent @JvmOverloads constructor(
 
     private fun configPlayer(attrs: AttrsPlayerComponent) = binding?.playerVideo?.player?.apply {
         config.playbackConfig.isAutoplayEnabled = true
-        setAds(attrs.ads)
-        resolveSourceUrl(attrs.videoDashUrl, attrs.videoHlsUrl)?.let { safeUrl ->
+        binding?.playerVideo?.keepScreenOn = true
+        config.remoteControlConfig.isCastEnabled = true
+        attrs.videoHlsUrl?.let { safeUrl ->
             val sourceConfig = SourceConfig.fromUrl(safeUrl)
             sourceConfig.thumbnailTrack = ThumbnailTrack(attrs.thumbnailsUrl)
             attrs.subtitles?.let {
@@ -70,14 +74,6 @@ class PlayerComponent @JvmOverloads constructor(
             config.styleConfig = StyleConfig().also {
                 it.isHideFirstFrame = true
             }
-        }
-    }
-
-    private fun resolveSourceUrl(videoDashUrl: String?, videoHlsUrl: String?): String? {
-        return if (!videoDashUrl.isNullOrEmpty()) {
-            videoDashUrl
-        } else {
-            videoHlsUrl
         }
     }
 
@@ -105,5 +101,10 @@ class PlayerComponent @JvmOverloads constructor(
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         dealloc()
+    }
+
+    override fun onViewRemoved(view: View?) {
+        super.onViewRemoved(view)
+        binding?.playerVideo?.player = null
     }
 }

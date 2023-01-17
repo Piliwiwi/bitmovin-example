@@ -22,13 +22,13 @@ class FirstFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        navigator = FirstNavigator()
+        navigator = FirstNavigator(this)
         setupButton()
     }
 
     private fun setupButton() = binding?.apply {
         navigationBtn.setOnClickListener {
-            navigator?.goToPlayer(activity)
+            navigator?.goToPlayer()
         }
     }
 

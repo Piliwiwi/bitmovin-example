@@ -5,10 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.bitmovin.player.api.media.subtitle.SubtitleTrack
 import com.example.bitmovin.databinding.FragmentPlayerBinding
-import com.example.player.AttrsPlayerComponent
-import com.example.player.AttrsPlayerComponentSubtitle
+import com.example.bitmovin.player.AttrsPlayerComponent
+import com.example.bitmovin.player.AttrsPlayerComponentSubtitle
 
 class PlayerFragment : Fragment() {
     var binding: FragmentPlayerBinding? = null
@@ -36,13 +35,15 @@ class PlayerFragment : Fragment() {
                 ads = "https://mdstrm.com/ads/6266d5e7e20e33083b4e33ea/map.xml?duration=1232",
                 subtitles = listOf(AttrsPlayerComponentSubtitle())
             )
-
         )
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
+    }
+
+    companion object {
+        const val TAG = "PlayerFragment"
     }
 }

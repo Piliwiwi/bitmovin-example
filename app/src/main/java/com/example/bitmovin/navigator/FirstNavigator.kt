@@ -1,11 +1,12 @@
 package com.example.bitmovin.navigator
 
-import android.content.Context
-import com.example.bitmovin.PlayerActivity
+import androidx.fragment.app.Fragment
+import com.example.bitmovin.fragments.PlayerFragment
+import com.example.bitmovin.utils.navigateTo
 
-class FirstNavigator {
-    fun goToPlayer(context: Context?) = context?.apply {
-        val intent = PlayerActivity.makeIntent(this)
-        startActivity(intent)
+class FirstNavigator(private val fragment: Fragment) {
+    fun goToPlayer() = fragment.context?.apply {
+        val playerFragment = PlayerFragment()
+        fragment.navigateTo(playerFragment, PlayerFragment.TAG)
     }
 }
