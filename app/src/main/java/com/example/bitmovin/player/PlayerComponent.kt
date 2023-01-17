@@ -42,11 +42,11 @@ class PlayerComponent @JvmOverloads constructor(
             val inflater =
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             binding = MplayMediaPlayerComponentPlayerBinding.inflate(inflater, this, true)
-            BitmovinCastManager.getInstance().updateContext(context)
         }
     }
 
     fun setAttributes(attrs: AttrsPlayerComponent) {
+        setAds(attrs.ads)
         configPlayer(attrs)
     }
 
