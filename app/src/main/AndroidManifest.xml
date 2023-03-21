@@ -15,7 +15,7 @@
         android:theme="@style/Theme.Bitmovin">
         <meta-data
             android:name="BITMOVIN_PLAYER_LICENSE_KEY"
-            android:value="" />
+            android:value="4cf22514-2ac7-4f71-9d30-4a41ee669422" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
