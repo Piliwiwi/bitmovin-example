@@ -14,7 +14,6 @@ import com.bitmovin.player.api.media.thumbnail.ThumbnailTrack
 import com.bitmovin.player.api.source.Source
 import com.bitmovin.player.api.source.SourceConfig
 import com.bitmovin.player.api.ui.StyleConfig
-import com.bitmovin.player.casting.BitmovinCastManager
 import com.example.bitmovin.databinding.MplayMediaPlayerComponentPlayerBinding
 
 data class AttrsPlayerComponent(
@@ -48,6 +47,7 @@ class PlayerComponent @JvmOverloads constructor(
     fun setAttributes(attrs: AttrsPlayerComponent) {
         setAds(attrs.ads)
         configPlayer(attrs)
+        setupClickBuntton()
     }
 
     private fun configPlayer(attrs: AttrsPlayerComponent) = binding?.playerVideo?.player?.apply {
@@ -55,7 +55,14 @@ class PlayerComponent @JvmOverloads constructor(
         binding?.playerVideo?.keepScreenOn = true
         config.remoteControlConfig.isCastEnabled = true
         attrs.videoHlsUrl?.let { safeUrl ->
-            val sourceConfig = SourceConfig.fromUrl(safeUrl)
+            val sourceConfig = SourceConfig.fromUrl(safeUrl).also {
+                it.metadata = mapOf(
+                    Pair(
+                        "vmapAdsRequest",
+                        "https://pubads.g.doubleclick.net/gampad/ads?npa=0&sz=1920x1080&gdfp_req=1&output=vmap&unviewed_position_start=1&env=vp&impl=s&vad_type=linear&ad_rule=1&iu=/105773011/MELIPLAY-AR&description_url=https%3A%2F%2Fwww.mercadolibre.com.ar%2Fplay%2Fcontent%2Fdf2c8fa04c18459ea40a6ffc6a68354d&vid_d=6061&tfcd=0&ppid=dd2236c9cd2cbbd60fe29c46d0cb4896&cust_params=content_provider%3DSONY%26content_id%3Ddf2c8fa04c18459ea40a6ffc6a68354d%26rating%3D+14%26release_year%3D2013%26site_id%3DMLC%26ppid%3Ddd2236c9cd2cbbd60fe29c46d0cb4896"
+                    )
+                )
+            }
             sourceConfig.thumbnailTrack = ThumbnailTrack(attrs.thumbnailsUrl)
             attrs.subtitles?.let {
                 sourceConfig.subtitleTracks = it.toSubtitleTracks()
@@ -82,9 +89,7 @@ class PlayerComponent @JvmOverloads constructor(
     }
 
     private fun AttrsPlayerComponentSubtitle.toSubtitleTracks() = SubtitleTrack(
-        url = url,
-        label = label,
-        language = language
+        url = url, label = label, language = language
     )
 
     private fun unload() = binding?.playerVideo?.player?.apply {
@@ -96,6 +101,12 @@ class PlayerComponent @JvmOverloads constructor(
         unload()
         player?.destroy()
         onDestroy()
+    }
+
+    private fun setupClickBuntton() = binding?.playerVideo?.player?.apply {
+        binding?.forwardVideo?.setOnClickListener {
+            seek(currentTime + 600)
+        }
     }
 
     override fun onDetachedFromWindow() {
