@@ -5,12 +5,12 @@ plugins {
 
 android {
 
-    compileSdk 31
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.example.bitmovin"
         minSdk 23
-        targetSdk 31
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -44,12 +44,11 @@ android {
 
 dependencies {
     implementation project(":player")
-    implementation 'androidx.core:core-ktx:1.1.0'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.bitmovin.player:player:3.24.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.bitmovin.player:player:3.40.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation "com.google.android.material:material:1.4.0"
-    implementation "androidx.navigation:navigation-fragment-ktx:2.2.2"
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.3'
-    implementation 'com.google.ads.interactivemedia.v3:interactivemedia:3.26.0'
+    implementation "com.google.android.material:material:1.9.0"
+    implementation "androidx.navigation:navigation-fragment-ktx:2.3.0"
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
+    implementation 'com.google.ads.interactivemedia.v3:interactivemedia:3.29.0'
 }
