@@ -51,4 +51,5 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:2.3.0"
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
     implementation 'com.google.ads.interactivemedia.v3:interactivemedia:3.29.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.8.10"
 }

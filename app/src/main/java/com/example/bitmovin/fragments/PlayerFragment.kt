@@ -1,11 +1,15 @@
 package com.example.bitmovin.fragments
 
+import android.app.Activity.RESULT_CANCELED
+import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.fragment.app.Fragment
-import com.bitmovin.player.api.media.subtitle.SubtitleTrack
+import com.example.bitmovin.SplashActivity
 import com.example.bitmovin.databinding.FragmentPlayerBinding
 import com.example.player.AttrsPlayerComponent
 import com.example.player.AttrsPlayerComponentSubtitle
@@ -25,7 +29,18 @@ class PlayerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        openSplash()
         setupPlayer()
+    }
+
+    private fun openSplash() {
+        val intent = Intent(activity, SplashActivity::class.java)
+        registerForActivityResult(StartActivityForResult()) { result ->
+            when (result.resultCode) {
+                RESULT_OK -> {}
+                RESULT_CANCELED -> {}
+            }
+        }.launch(intent)
     }
 
     private fun setupPlayer() = binding?.apply {
@@ -36,7 +51,6 @@ class PlayerFragment : Fragment() {
                 ads = "https://mdstrm.com/ads/6266d5e7e20e33083b4e33ea/map.xml?duration=1232",
                 subtitles = listOf(AttrsPlayerComponentSubtitle())
             )
-
         )
     }
 

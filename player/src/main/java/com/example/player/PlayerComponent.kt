@@ -3,11 +3,16 @@ package com.example.player
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.bitmovin.player.PlayerView
+import com.bitmovin.player.api.Player
+import com.bitmovin.player.api.PlayerConfig
 import com.bitmovin.player.api.advertising.AdItem
 import com.bitmovin.player.api.advertising.AdSource
 import com.bitmovin.player.api.advertising.AdSourceType
 import com.bitmovin.player.api.advertising.AdvertisingConfig
+import com.bitmovin.player.api.event.on
 import com.bitmovin.player.api.media.subtitle.SubtitleTrack
 import com.bitmovin.player.api.media.thumbnail.ThumbnailTrack
 import com.bitmovin.player.api.source.Source
@@ -34,6 +39,9 @@ class PlayerComponent @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs) {
 
     private var binding: MplayMediaPlayerComponentPlayerBinding? = null
+    private var bitmovinLicense = "4cf22514-2ac7-4f71-9d30-4a41ee669422"
+    private var playerView: PlayerView? = null
+    private var playerUi: PlayerUi? = null
 
     init {
         if (binding == null) {
@@ -45,9 +53,42 @@ class PlayerComponent @JvmOverloads constructor(
 
     fun setAttributes(attrs: AttrsPlayerComponent) {
         configPlayer(attrs)
+        loadVideo(attrs)
     }
 
-    private fun configPlayer(attrs: AttrsPlayerComponent) = binding?.playerVideo?.player?.apply {
+    private fun configPlayer(attrs: AttrsPlayerComponent) {
+        playerView?.keepScreenOn = true
+
+        val player = Player.create(context, getPlayerConfig())
+
+        playerView = PlayerView(context, player).apply {
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+        }
+
+        playerUi = PlayerUi(context).also {
+            it.layoutParams = ViewGroup.LayoutParams(
+                LayoutParams.MATCH_PARENT,
+                LayoutParams.MATCH_PARENT
+            )
+        }
+
+        binding?.playerUiContainer?.addView(playerUi)
+        binding?.playerComponentContainer?.addView(playerView)
+    }
+
+    private fun getPlayerConfig() = PlayerConfig(key = bitmovinLicense).also {
+        it.styleConfig.isUiEnabled = false
+        it.bufferConfig.audioAndVideo.forwardDuration = 10.0
+        it.bufferConfig.startupThreshold = 5.0
+        it.adaptationConfig.maxSelectableVideoBitrate = 500000
+        it.playbackConfig.isMuted = true
+        it.remoteControlConfig.isCastEnabled = false
+    }
+
+    private fun loadVideo(attrs: AttrsPlayerComponent) = playerView?.player?.apply {
         config.playbackConfig.isAutoplayEnabled = true
         setAds(attrs.ads)
         resolveSourceUrl(attrs.videoDashUrl, attrs.videoHlsUrl)?.let { safeUrl ->
@@ -61,7 +102,21 @@ class PlayerComponent @JvmOverloads constructor(
         }
     }
 
-    private fun setAds(ads: String?) = binding?.playerVideo?.player?.apply {
+    /*private fun configPlayer(attrs: AttrsPlayerComponent) = binding?.playerVideo?.player?.apply {
+        config.playbackConfig.isAutoplayEnabled = true
+        setAds(attrs.ads)
+        resolveSourceUrl(attrs.videoDashUrl, attrs.videoHlsUrl)?.let { safeUrl ->
+            val sourceConfig = SourceConfig.fromUrl(safeUrl)
+            sourceConfig.thumbnailTrack = ThumbnailTrack(attrs.thumbnailsUrl)
+            attrs.subtitles?.let {
+                sourceConfig.subtitleTracks = it.toSubtitleTracks()
+            }
+            val source = Source.create(sourceConfig)
+            load(source)
+        }
+    }
+*/
+    private fun setAds(ads: String?) = playerView?.player?.apply {
         ads?.let { safeAds ->
             val adsVant = AdSource(AdSourceType.Ima, safeAds)
             val newAd = AdItem(adsVant)
@@ -69,6 +124,7 @@ class PlayerComponent @JvmOverloads constructor(
             config.advertisingConfig = advertising
             config.styleConfig = StyleConfig().also {
                 it.isHideFirstFrame = true
+                it.isUiEnabled = false
             }
         }
     }
@@ -91,11 +147,11 @@ class PlayerComponent @JvmOverloads constructor(
         language = language
     )
 
-    private fun unload() = binding?.playerVideo?.player?.apply {
+    private fun unload() = playerView?.player?.apply {
         unload()
     }
 
-    private fun dealloc() = binding?.playerVideo?.apply {
+    private fun dealloc() = playerView?.apply {
         player?.onStop()
         unload()
         player?.destroy()
